@@ -1,6 +1,5 @@
 
 ## Network architectures
----
 
 Let Ck denote a Convolution-BatchNorm-ReLU layer with k filters. CDk denotes a a Convolution-BatchNormDropout-ReLU layer with a dropout rate of 50%. All convolutions are 4× 4 spatial filters applied with stride 2. Convolutions in the encoder, and in the discriminator, downsample by a factor of 2, whereas in the decoder they upsample by a factor of 2.
 
@@ -27,7 +26,7 @@ After the last layer, a convolution is applied to map to a 1
 dimensional output, followed by a Sigmoid function. As an exception to the above notation, BatchNorm is not applied to the first C64 layer. All ReLUs are leaky, with slope 0.2. All other discriminators follow the same basic architecture, with depth varied to modify the receptive field size:
 
 ## Training details
----
+
 All networks were trained from scratch. Weights were initialized from a Gaussian distribution with mean 0 and standard deviation 0.02.
 Batch iteration : 200000
 Batch size : 1
