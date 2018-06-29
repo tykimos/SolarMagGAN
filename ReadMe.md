@@ -1,51 +1,73 @@
 
 ## Network architectures
 
-Let Ck denote a Convolution-BatchNorm-ReLU layer with k filters. CDk denotes a a Convolution-BatchNormDropout-ReLU layer with a dropout rate of 50%. All convolutions are 4× 4 spatial filters applied with stride 2. Convolutions in the encoder, and in the discriminator, downsample by a factor of 2, whereas in the decoder they upsample by a factor of 2.
-
 ### Generator architectures
 
-The encoder-decoder architecture consists of:
+The generator is consist of the encoder-decoder architecture:
+
 encoder:
 
-    C64-C128-C256-C512-C512-C512-C512-C512
+1. Conv2D(filers = 64, strides = 2), LeakyReLu(slope = 0.2)
+2. Conv2D(filers = 128, strides = 2), BatchNorm, LeakyReLu(slope = 0.2)
+3. Conv2D(filers = 256, strides = 2), BatchNorm, LeakyReLu(slope = 0.2)
+4. Conv2D(filers = 512, strides = 2), BatchNorm, LeakyReLu(slope = 0.2)
+5. Conv2D(filers = 512, strides = 2), BatchNorm, LeakyReLu(slope = 0.2)
+6. Conv2D(filers = 512, strides = 2), BatchNorm, LeakyReLu(slope = 0.2)
+7. Conv2D(filers = 512, strides = 2), BatchNorm, LeakyReLu(slope = 0.2)
+8. Conv2D(filers = 512, strides = 2), BatchNorm, LeakyReLu(slope = 0.2)
+9. Conv2D(filers = 512, strides = 2), BatchNorm, LeakyReLu(slope = 0.2)
+10. Conv2D(filers = 512, strides = 2), ReLu
 
 decoder:
 
-    CD512-CD512-CD512-C512-C256-C128-C64
+1. Conv2DTranspose(filter = 512, strides = 2), BatchNorm, Dropout(rate = 0.5), ReLU
+2. Conv2DTranspose(filter = 512, strides = 2), BatchNorm, Dropout(rate = 0.5), ReLU
+3. Conv2DTranspose(filter = 512, strides = 2), BatchNorm, Dropout(rate = 0.5), ReLU
+4. Conv2DTranspose(filter = 512, strides = 2), BatchNorm, ReLU
+5. Conv2DTranspose(filter = 512, strides = 2), BatchNorm, ReLU
+6. Conv2DTranspose(filter = 512, strides = 2), BatchNorm, ReLU
+7. Conv2DTranspose(filter = 256, strides = 2), BatchNorm, ReLU
+8. Conv2DTranspose(filter = 128, strides = 2), BatchNorm, ReLU
+9. Conv2DTranspose(filter = 64, strides = 2), BatchNorm, ReLU
+10. Conv2DTranspose(filter = 1, strides = 2), Tanh
 
-After the last layer in the decoder, a convolution is applied to map to the number of output channels (3 in general, except in colorization, where it is 2), followed by a Tanh function. As an exception to the above notation, BatchNorm
-is not applied to the first C64 layer in the encoder.
-All ReLUs in the encoder are leaky, with slope 0.2, while ReLUs in the decoder are not leaky.
+Also, the generator has skip-connections between layers of the encoder and layers of the decoder like the U-Net architecture. 
 
-The U-Net architecture is identical except with skip connections between each layer i in the encoder and layer n−i in the decoder, where n is the total number of layers. The skip connections concatenate activations from layer i to
-layer n − i. This changes the number of channels in the decoder:
-U-Net decoder:
+skip-connection:
 
-    CD512-CD1024-CD1024-C1024-C1024-C512-C256-C128
+* encoder 1st layer - decoder 10th layer
+* encoder 2nd layer - decoder 9th layer
+* encoder 3rd layer - decoder 8th layer
+* encoder 4th layer - decoder 7th layer
+* encoder 5th layer - decoder 6th layer
+* encoder 6th layer - decoder 5th layer
+* encoder 7th layer - decoder 4th layer
+* encoder 8th layer - decoder 3rd layer
+* encoder 9th layer - decoder 2nd layer
 
 ### Discriminator architectures
 
-The 70 × 70 discriminator architecture is:
+The discriminator architecture is described in the following notation:
+* Conv2D(filers = 64, strides = 2), LeakyReLu(slope = 0.2)
+* Conv2D(filers = 128, strides = 2), BatchNorm, LeakyReLu(slope = 0.2)
+* Conv2D(filers = 256, strides = 2), BatchNorm, LeakyReLu(slope = 0.2)
+* Conv2D(filers = 512, strides = 1), BatchNorm, LeakyReLu(slope = 0.2)
+* Conv2D(filers = 1, strides = 1), Sigmoid
 
-    C64-C128-C256-C512
+The receptive field size used in our discriminator is 126 x 126.
 
-After the last layer, a convolution is applied to map to a 1
-dimensional output, followed by a Sigmoid function. As an exception to the above notation, BatchNorm is not applied to the first C64 layer. All ReLUs are leaky, with slope 0.2. All other discriminators follow the same basic architecture, with depth varied to modify the receptive field size:
+## Hyperparameter
 
-## Training details
+#### Loss
+* Lamba : 100
 
-All networks were trained from scratch. Weights were initialized from a Gaussian distribution with mean 0 and standard deviation 0.02.
+#### Batch
+
 * Batch iteration : 200000
 * Batch size : 1
-* Optimizer : Adam optimizer
-* Learning rate : 2e-4
-* beta_1 : 0.5
-* beta_2 : 0.999
-* epsilon : 1e-07
-* decay : 0.0
-* amsgrad : False
-* lambda : 100
-* BatchNormalization
-* momentum : 0.9
-* epsilon : 1.01e-5
+
+#### Optimizer 
+* Optimizer : Adam solver
+* Learning rate : 0.0002
+* momentum beta 1 parameter : 0.5
+* momentum beta 2 parameter : 0.999
