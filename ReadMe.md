@@ -35,15 +35,15 @@ Also, the generator has skip-connections between layers of the encoder and layer
 
 skip-connection:
 
-* encoder 1st layer - decoder 10th layer
-* encoder 2nd layer - decoder 9th layer
-* encoder 3rd layer - decoder 8th layer
-* encoder 4th layer - decoder 7th layer
-* encoder 5th layer - decoder 6th layer
-* encoder 6th layer - decoder 5th layer
-* encoder 7th layer - decoder 4th layer
-* encoder 8th layer - decoder 3rd layer
-* encoder 9th layer - decoder 2nd layer
+* encoder 1st layer - decoder 9th layer
+* encoder 2nd layer - decoder 8th layer
+* encoder 3rd layer - decoder 7th layer
+* encoder 4th layer - decoder 6th layer
+* encoder 5th layer - decoder 5th layer
+* encoder 6th layer - decoder 4th layer
+* encoder 7th layer - decoder 3rd layer
+* encoder 8th layer - decoder 2nd layer
+* encoder 9th layer - decoder 1st layer
 
 ### Discriminator architectures
 
@@ -54,16 +54,15 @@ The discriminator architecture is described in the following notation:
 * Conv2D(filers = 512, strides = 1), BatchNorm, LeakyReLu(slope = 0.2)
 * Conv2D(filers = 1, strides = 1), Sigmoid
 
-The receptive field size used in our discriminator is 126 x 126.
+The receptive field size used in our discriminator is 70 x 70.
 
 ## Hyperparameter
 
-#### Loss
-* Lamba : 100
+#### The loss configuration of the objective functions of the Generator
+* Total loss = loss of J2 + 100 * loss of J1
 
 #### Batch
-
-* Batch iteration : 200000
+* Batch iteration : 500,000
 * Batch size : 1
 
 #### Optimizer 
