@@ -73,5 +73,4 @@ The receptive field size used in our discriminator is 70 x 70.
 
 #### Initializer
 * The Initializer of the Convolution Layers : normal distribution, mean : 0.0, stddev : 0.02
-* The Initializer of the Convolution Layers : normal distribution, mean : 0.0, stddev : 0.02
 * The gamma initializer of the BatchNormalization layers : normal distribution, mean : 1.0, stddev : 0.02
